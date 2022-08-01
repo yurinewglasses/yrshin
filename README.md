@@ -2,13 +2,20 @@
 
 # 1주차 (7/25~7/29)
 
-## RNA-seq  (HISAT2 → featureCounts → edgeR)
+- 복령(wolfiporia)의 발달 단계에 따른 차등 발현 유전자(Differential Expressesd Gene) 확인
+
+    <초기 파일>
+    - Bok(F1,F2,F3,M1,M2,S1,S2,S3) fastq file
+    - wolfiporia_cocos_reference fasta file
+
+## RNA-seq analysis  (HISAT2 → featureCounts → edgeR)
 
 ![image](https://user-images.githubusercontent.com/110142232/182016478-331519f0-e5b0-42cf-8039-e3149c53997f.png)
 
 
 ### 1)  HISAT2
 
+- Raw read들을 wolfiporia Reference genome에 mapping
 - FASTQ to SAM
 - FASTQ 파일의 Read들이 Reference genome에 mapping 완료되면 각 Read별로 Reference genome에서의 염색체 번호 및 위치가 기록되는데, 이를 Sam 파일이라고 함.
 
@@ -28,7 +35,7 @@ samtools sort BokF2.bam -@ 3 -o BokF2_sorted.bam  #염색체와 위치(coordinat
 
 ### 3) featureCounts
 
-- 
+- mapping된 read들을 정량화
 
 ```r
 featureCounts -a wolfiporia.gff -o wolfiporia.out -g ID -T 3 -t gene *sorted.bam
@@ -39,7 +46,46 @@ featureCounts -a wolfiporia.gff -o wolfiporia.out -g ID -T 3 -t gene *sorted.bam
 - MDS Plot
     - Group별로 전체적인 발현량 패턴에 유의미한 차이가 있는지 확인
     - 전체적으로 서열들의 sequencing이 잘 되었는지 확인
-- Nomalization
+![wolfiporia_mds](https://user-images.githubusercontent.com/110142232/182065930-a71ce901-4f05-47e0-81cb-6e831339ca79.png)
+
+- BCV plot
+
+![wolfiporia](https://user-images.githubusercontent.com/110142232/182072866-509e24aa-9c9e-41bd-996a-9499608c8eff.png)
+
+
+- exactTest
+    
+   - BokM-BokF
+    
+    ![슬라이드1](https://user-images.githubusercontent.com/110142232/182081395-9b408689-b9e7-4162-b589-a33484e220d7.PNG)
+
+
+    
+   - BokF-BokS
+        
+    ![슬라이드2](https://user-images.githubusercontent.com/110142232/182081425-ff04ced7-cf4c-4e12-9037-9b682f4b9671.PNG)
+
+
+   - BokM-BokS
+       
+    ![슬라이드3](https://user-images.githubusercontent.com/110142232/182081454-560c80d8-8f58-46c1-86d4-6b14665ffd9f.PNG)
+    
+    ![슬라이드4](https://user-images.githubusercontent.com/110142232/182081577-be95c0d4-5cf1-47e0-8feb-ca843fca444b.PNG)
+
+       
+       
+      
+
+       
+
+
+
+
+
+
+
+
+
 
 ## IGV (Intergrative Genomics View)
 
@@ -79,6 +125,7 @@ FunGAP은 다양한 유전자 예측 프로그램을 통합하고 유전자 예�
 
 
 **3단계: Gene model evaluation and filtration**
+
 유전자 모델을 평가하여 최종 유전자 모델을 선별하는 단계이다. 
 
 유전자 모델의 평가는 BLASTp, BUSCO 및 InterProScan으로부터 얻은 점수를 방정식에 따라 계산된 evidence score가 높은 유전자 모델을 최종 유전자 모델로 선별하는 방식이다. 
@@ -120,7 +167,8 @@ python fungap.py \
 ```
 
 ![fungap_out](https://user-images.githubusercontent.com/110142232/182061268-d1f34ae7-ca90-4547-9818-83498e0e673f.jpg)
-
+![fungap_out_prot_len_dist](https://user-images.githubusercontent.com/110142232/182065429-bd6e90bc-5dc6-4c80-915f-fd701b342583.png)
+![fungap_out_trans_len_dist](https://user-images.githubusercontent.com/110142232/182065446-c58ed160-3a66-4bf8-90bb-b887688ced8c.png)
 ![SmartSelectImage_2022-08-01-12-14-50](https://user-images.githubusercontent.com/110142232/182065153-d816b928-5d8e-4539-a8fe-50e6ad231747.png)
 
 

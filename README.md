@@ -119,4 +119,7 @@ python fungap.py \
   --busco fungi_odb10
 ```
 
+![fungap_out](https://user-images.githubusercontent.com/110142232/182061268-d1f34ae7-ca90-4547-9818-83498e0e673f.jpg)
+
+
 ## Rosalind

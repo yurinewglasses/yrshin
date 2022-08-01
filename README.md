@@ -48,12 +48,23 @@ featureCounts -a wolfiporia.gff -o wolfiporia.out -g ID -T 3 -t gene *sorted.bam
     - 전체적으로 서열들의 sequencing이 잘 되었는지 확인
 ![wolfiporia_mds](https://user-images.githubusercontent.com/110142232/182065930-a71ce901-4f05-47e0-81cb-6e831339ca79.png)
 
+
+- Data filtering
+    - read counts가 너무 적은 유전자는 filtering하여 제외함
+    - read counts가 너무 적은 경우, differential expression 분석 시 더욱 민감하게 적용되므로, 신뢰도가 떨어질 수 있음 (read count 10개-50개 차이보다 1000개-5000개 차이가 더 유의미함)
+
+
+- Normalization
+    -  mapping된 read의 개수로 발현량을 정의하기에는 sample별로 시퀀싱 데이터 크기가 다를 수 있고, 유전자나 transcript의 길이에 따라 mapping된 read의 수도 다르기 때문에 객관적인 값으로 보기는 힘들다
+    - 이러한 오차를 줄여 객관적인 값을 보여주도록 유전자의 길이, library size를 모두 고려하여 normalization을 진행한다.
+    - FPKM, RPKM, TMM(Trimmed mean of M values : edgeR에서 사용)
+
 - BCV plot
 
 ![wolfiporia](https://user-images.githubusercontent.com/110142232/182072866-509e24aa-9c9e-41bd-996a-9499608c8eff.png)
 
 
-- exactTest
+- exactTest(Differential Expression)
     
    - BokM-BokF
     
@@ -107,12 +118,15 @@ Lynux 환경에서 FunGAP을 설치하고, **FunGAP의 사용 방법 및 기능*
 
 FunGAP은 다양한 유전자 예측 프로그램을 통합하고 유전자 예측 모델을 평가하여 진균류 유전체를 해독하는 시스템이다. 
 
-![Untitled](2022%20Summer%20URAP%20-%20%E1%84%89%E1%85%B5%E1%86%AB%E1%84%8B%E1%85%B2%E1%84%85%E1%85%B5(%E1%84%89%E1%85%A2%E1%86%BC%E1%84%80%E1%85%A9%E1%86%BC20)%20baf0f04a85934cdc948cbb4b2cda662e/Untitled.png)
+![image](https://user-images.githubusercontent.com/110142232/182183462-77e424dd-322a-4ffd-bb18-49e44e5ce4a2.png)
+
 
 **1단계: Preprocessing of input data**
 
 - **RepeatMasker** : 조립된 유전체 서열 내 반복 서열을 찾아 masking하여 반복 서열이 유전자 정렬 및 예측을 방해하는 것을 방지
 - **Hisat / Trinity** : mRNA 서열분석 reads를 정렬 및 조립하여 contig를 생성
+
+
 
 
 **2단계: Gene prediction**
@@ -122,6 +136,8 @@ FunGAP은 다양한 유전자 예측 프로그램을 통합하고 유전자 예�
 - Augustus
 - Maker
 - Braker
+
+
 
 
 **3단계: Gene model evaluation and filtration**
@@ -137,21 +153,26 @@ $$
 - coverage : 서열 길이 보정값 → blast 결과 출력에서 query coverage
 - Pfam scores : InterProScan의 XML 결과에서 hmmer3-match 점수
 
+
 - BLASTp
     - 주어진 서열 데이터베이스로부터 유사한 서열을 검색하는 프로그램
     - 예측된 유전자 서열이 데이터베이스에 존재하는지를 검색하여 유전자 모델 평가에 사용될 수 있음
     - download_sister_orgs.py 스크립트를 통해 주어진 생물체의 분류군에 대해 NCBI 단백질 서열을 다운로드 할 수 있으며 이는 BLASTp의 데이터베이스로 이용됨
     - 서열의 길이가 길수록 더 높은 bit score를 얻으므로 이를 보정하기 위해 서열 길이 coverage를 곱하여 최종 BLAST evidence 점수를 계산함
 
+
 - BUSCO
     - 모든 진균 유전체에 보존된 단일 카피 ortholog에 대해 hidden Markov 모델을 데이터베이스 형태로 제공함
     - 예측 유전자가 BUSCO 데이터베이스 모델에 정렬될 경우 다른 그렇지 않은 예측 유전자에 비해 실제 유전자일 가능성이 높다고 판단 가능
+    
     
 - InterProScan
     - Pfam 도메인 검색
     - 수동으로 큐레이트된 단백질 군의 데이터베이스 제공
     - Pfam 도메인으로 주석 처리된 유전자 모델이 실제 유전자일 가능성이 더 높다는 가정 하에 유전자 모델 평가에 사용
     - Pfam에 대한 점수는 InterProScan의 XML 결과에서 hmmer3-match 점수에 의해 직접 제공됨
+    
+    
 <실행 코드>
 
 ```python
@@ -171,5 +192,5 @@ python fungap.py \
 ![fungap_out_trans_len_dist](https://user-images.githubusercontent.com/110142232/182065446-c58ed160-3a66-4bf8-90bb-b887688ced8c.png)
 ![SmartSelectImage_2022-08-01-12-14-50](https://user-images.githubusercontent.com/110142232/182065153-d816b928-5d8e-4539-a8fe-50e6ad231747.png)
 
+----------------------------------------------------------------
 
-## Rosalind

@@ -188,6 +188,7 @@ python fungap.py \
 ```
 
 ![fungap_out](https://user-images.githubusercontent.com/110142232/182061268-d1f34ae7-ca90-4547-9818-83498e0e673f.jpg)
+
 ![fungap_out_prot_len_dist](https://user-images.githubusercontent.com/110142232/182065429-bd6e90bc-5dc6-4c80-915f-fd701b342583.png)
 ![fungap_out_trans_len_dist](https://user-images.githubusercontent.com/110142232/182065446-c58ed160-3a66-4bf8-90bb-b887688ced8c.png)
 ![SmartSelectImage_2022-08-01-12-14-50](https://user-images.githubusercontent.com/110142232/182065153-d816b928-5d8e-4539-a8fe-50e6ad231747.png)

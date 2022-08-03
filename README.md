@@ -194,4 +194,12 @@ python fungap.py \
 ![SmartSelectImage_2022-08-01-12-14-50](https://user-images.githubusercontent.com/110142232/182065153-d816b928-5d8e-4539-a8fe-50e6ad231747.png)
 
 ----------------------------------------------------------------
+# 2주차 (8/1~8/5)
 
+zebrafish에 
+
+1. Trim-Galore 
+
+2. Hisat2
+
+3. 

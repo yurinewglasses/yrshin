@@ -254,8 +254,15 @@ hisat2 --max-intronlen 50000 -p 3 -x index2 -1 /espeon/analysis1/yrshin/SRA_naph
 
 ### MDS Plot
 
-![슬라이드7](https://user-images.githubusercontent.com/110142232/183565335-3efc452d-991d-4877-8e26-f4590f64b643.PNG)
+- group간 근접성(prximity)를 시각화하기 위해 MDS plot을 그렸다. 
+- 빨간색 표지된 sample이 1-naphthol 처리를 하지 않은 group이고, 하늘색 표지된 sample이 1-naphthol 처리한 group이다. 
+- 같은 group끼리 거리가 가까운 경우도 있지만, 몇 개의 sample은 같은 group임에도 동떨어져 있는 모습이 보인다. 
 
+![MDS plot](https://user-images.githubusercontent.com/110142232/183566506-0182e8db-83b8-4fba-959c-1c19a96ec111.png)
+
+- grouping이 뚜렷하게 되지 않는 원인이 sample의 문제인지, MA Plot을 그리는 과정에서 코드의 문제인지 파악하는 과정이 필요했다. 데이터를 제공한 논문의 GEO data(FeatureCount 직후)를 다운받아 동일한 코드를 실행해봤다.
+
+![exon_zebrafish_p53_degZv9_p53_mds](https://user-images.githubusercontent.com/110142232/183568211-a1e44c65-19da-490b-86d0-dbfd65924148.png)
 
 
 ### Heatmap
@@ -287,5 +294,3 @@ R pipeline을 통해 얻어낸 DEG table이다. 아래 표는 logFC 값이 큰 �
 2) Wild type zebrafish
 
 ![SmartSelectImage_2022-08-09-01-15-35](https://user-images.githubusercontent.com/110142232/183565592-0ba42a43-ec82-46bd-a405-9a309e2e4495.png)
-
-

@@ -225,6 +225,8 @@ SRA 데이터를 제공한 논문과 RNA-seq 데이터 분석 과정의 차이�
 ![슬라이드6](https://user-images.githubusercontent.com/110142232/183565957-47016bdc-bc91-4b66-8b0c-d7c589f3180d.PNG)
 
 
+Reference sequence의 경우 참고 논문에서는 UCSC danRer7(=NCBI Zv9)을 사용했다. 이 서열은 2010년 버전의 것이므로, 더 유의미한 결과를 얻어내기 위해서는 가장 최신화된 서열인 danRer11을 사용할 필요가 있었다. 하지만 분석 과정에서 생겨나는 코딩상의 많은 오류를 해결하기 위해서 우선 참고 논문과 같은 danRer7을 사용한 후, 분석 과정의 신뢰성이 보장된다면(즉, 동일한 데이터를 사용한 논문과 비교적 유사한 결과가 나온다면) 같은 방식으로 danRer11 버전을 사용하기로 방향을 잡았다.
+
 
 ## QC & Pre-processing
 
@@ -257,12 +259,15 @@ hisat2 --max-intronlen 50000 -p 3 -x index2 -1 /espeon/analysis1/yrshin/SRA_naph
 - group간 근접성(prximity)를 시각화하기 위해 MDS plot을 그렸다. 
 - 빨간색 표지된 sample이 1-naphthol 처리를 하지 않은 group이고, 하늘색 표지된 sample이 1-naphthol 처리한 group이다. 
 - 같은 group끼리 거리가 가까운 경우도 있지만, 몇 개의 sample은 같은 group임에도 동떨어져 있는 모습이 보인다. 
+- 개선점 : sample 이름을 너무 길게 설정하여 겹쳐보이는 부분이 많고 정확하게 식별하기 어렵다. 조금 더 간결하게 sample 이름을 설정할 필요가 있다.
 
 ![MDS plot](https://user-images.githubusercontent.com/110142232/183566506-0182e8db-83b8-4fba-959c-1c19a96ec111.png)
 
 - grouping이 뚜렷하게 되지 않는 원인이 sample의 문제인지, MA Plot을 그리는 과정에서 코드의 문제인지 파악하는 과정이 필요했다. 데이터를 제공한 논문의 GEO data(FeatureCount 직후)를 다운받아 동일한 코드를 실행해봤다.
 
 ![exon_zebrafish_p53_degZv9_p53_mds](https://user-images.githubusercontent.com/110142232/183568211-a1e44c65-19da-490b-86d0-dbfd65924148.png)
+
+- 비교적 뚜렷하게 group이 나뉜 것을 확인했다.
 
 
 ### Heatmap
@@ -281,6 +286,9 @@ hisat2 --max-intronlen 50000 -p 3 -x index2 -1 /espeon/analysis1/yrshin/SRA_naph
 
 뚜렷한 색 차이가 드러나지는 않지만 전반적인 경향성을 보았을 때 1-Naphthol을 처리하지 않은 group과 처리한 group 사이 발현 차이가 드러난다. 특히 No naphthol group에서 up-regulated DEG 범위가 유사하다고 판단했다. 
 
+![exon_zebrafish_p53_degZv9_p53_heatmap_deg](https://user-images.githubusercontent.com/110142232/183571442-aa589109-3a9a-4cc6-b701-70cff1b369b6.png)
+
+검증의 일환으로 논문 GEO expression set data를 이용한 Heatmap(p53)도 그렸다. 
 
 
 ### DEG table
@@ -294,3 +302,6 @@ R pipeline을 통해 얻어낸 DEG table이다. 아래 표는 logFC 값이 큰 �
 2) Wild type zebrafish
 
 ![SmartSelectImage_2022-08-09-01-15-35](https://user-images.githubusercontent.com/110142232/183565592-0ba42a43-ec82-46bd-a405-9a309e2e4495.png)
+
+
+

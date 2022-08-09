@@ -194,12 +194,98 @@ python fungap.py \
 ![SmartSelectImage_2022-08-01-12-14-50](https://user-images.githubusercontent.com/110142232/182065153-d816b928-5d8e-4539-a8fe-50e6ad231747.png)
 
 ----------------------------------------------------------------
+
+
+
 # 2주차 (8/1~8/5)
 
-zebrafish에 
+목표 : Wild type과 p53 knock-out zebrafish에 1-naphthol을 처리했을 때 유전자 발현량 차이를 비교한다. 
 
-1. Trim-Galore 
+---
 
-2. Hisat2
+group은 다음과 같이 4가지로 나눌 수 있다.
 
-3. 
+1) Wild type / No 1-naphthol treatment (31~35)
+
+2) Wild type / Treated with 1-naphthol (36~40)
+
+3) p53 knock out / No 1-naphthol treatment (21~25)
+
+4) p53 knock out / Treated with 1-naphthol (26~30)
+
+DEG 분석을 통해 1&2 group, 3&4 group을 비교하여 1-naphthol 처리에 따른 발현량 차이를 분석하는 것을 목표로 삼았다.
+
+SRA 데이터를 제공한 논문과 RNA-seq 데이터 분석 과정의 차이를 비교하며 진행했다. 자세한 논문 내용은 아래 링크를 통해 확인할 수 있다. 
+
+논문 : **TP53 Modulates Oxidative Stress in Gata1+ Erythroid Cells**
+
+[https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5312256/](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5312256/)
+
+
+![슬라이드6](https://user-images.githubusercontent.com/110142232/183565957-47016bdc-bc91-4b66-8b0c-d7c589f3180d.PNG)
+
+
+
+## QC & Pre-processing
+
+Trim Galore을 통해 20개의 sample 데이터(SRR5125621~SRR5125640) 전처리를 수행했다. 
+
+```bash
+prefetch SRR5125623 && fastq-dump --split-files SRR5125621
+trim_galore --paired -j 4 -o QC SRR5125623_1.fastq SRR5125623_2.fastq
+```
+
+## Read alignment
+
+Hisat2 및 samtools를 통해 20개 데이터의 alignment를 진행한다.  사용한 reference genome은 NCBI Zv9이다. max-introlen 값은 zebrafish 관련 유사 연구를 참고하여 설정하고자 했다. 하지만 연구마다 그 범위가 너무 다양했으므로, 10,000/20,000/50,000/100,000/500,000 총 4번의 hisat2를 진행하여 alignment rate가 가장 높게 나타나는 길이를 택했다.
+
+```bash
+hisat2 --max-intronlen 50000 -p 3 -x index2 -1 /espeon/analysis1/yrshin/SRA_naphthol/QC/SRR5125623_1_val_1.fq -2 /espeon/analysis1/yrshin/SRA_naphthol/QC/SRR5125623_2_val_2.fq 2> Zv9_SRR5125623hisat2.log | samtools view -@ 3 -bSF4 - | samtools sort -@ 3 - -o Zv9_SRR5125623_sorted.bam
+```
+
+## Expression quantification
+
+처음 quantification을 수행할 때는 all.count 데이터를 만들도록 설계된 R pipeline code를 이용하여 진행했으며, 추후 신뢰할만한 결과가 나왔는지 확인하기 위해 FeatureCount를 통해 비교 및 검증하였다.  
+
+- R pipeline code
+- FeatureCount
+
+## DE analysis
+
+### MDS Plot
+
+![슬라이드7](https://user-images.githubusercontent.com/110142232/183565335-3efc452d-991d-4877-8e26-f4590f64b643.PNG)
+
+
+
+### Heatmap
+
+- Wild type zebrafish에 1-naphthol을 처리했을 때의 발현 차이를 시각화했다.
+- Whole genes를 대상으로 그린 것보다 DEG를 대상으로 그린 Heatmap에서 더 뚜렷한 group별 차이가 드러났다.
+
+![슬라이드8](https://user-images.githubusercontent.com/110142232/183565411-a5a4f293-66f6-4577-8dfb-2b17d2a0ba40.PNG)
+
+![슬라이드9](https://user-images.githubusercontent.com/110142232/183565417-9b490993-4090-410d-a152-20d6d2f15b3e.PNG)
+
+![슬라이드10](https://user-images.githubusercontent.com/110142232/183565430-72384f23-5115-49ab-b5c2-ed38c6976fc1.PNG)
+
+![슬라이드11](https://user-images.githubusercontent.com/110142232/183565440-65d5f1ef-689b-4cbd-9a08-1da9ee0e4714.PNG)
+
+
+뚜렷한 색 차이가 드러나지는 않지만 전반적인 경향성을 보았을 때 1-Naphthol을 처리하지 않은 group과 처리한 group 사이 발현 차이가 드러난다. 특히 No naphthol group에서 up-regulated DEG 범위가 유사하다고 판단했다. 
+
+
+
+### DEG table
+
+R pipeline을 통해 얻어낸 DEG table이다. 아래 표는 logFC 값이 큰 순서대로 상위 15개의 DEG를 내림차순 정렬한 것이다. 전체 table은 github에 추가로 기재했다. 
+
+1) p53 knock out zebrafish
+
+![SmartSelectImage_2022-08-09-01-03-16](https://user-images.githubusercontent.com/110142232/183565635-dca0fb78-fdef-4618-91fa-05586abf1763.png)
+
+2) Wild type zebrafish
+
+![SmartSelectImage_2022-08-09-01-15-35](https://user-images.githubusercontent.com/110142232/183565592-0ba42a43-ec82-46bd-a405-9a309e2e4495.png)
+
+
